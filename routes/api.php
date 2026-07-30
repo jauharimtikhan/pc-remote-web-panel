@@ -13,5 +13,6 @@ Route::controller(AndroidAppController::class)
     ->group(function () {
         Route::post('/check-update', 'check_update');
         Route::get('/update-failed', 'update_failed')->name('api.android.fallback-version');
+        Route::get('/download-bundle/{id}', 'downloadBundleAsset')->name('api.android.download-asset');
         Route::post('/upload-bundle', 'bundleAssetUploaded');
     });

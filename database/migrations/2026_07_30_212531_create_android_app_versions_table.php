@@ -12,10 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('android_app_versions', function (Blueprint $table) {
-            $table->id();
+            $table->ulid('id')->primary();
             $table->string('version')->nullable();
             $table->bigInteger('version_code')->nullable();
             $table->string('bundle_url')->nullable();
+            $table->string('path')->nullable();
             $table->timestamps();
         });
     }

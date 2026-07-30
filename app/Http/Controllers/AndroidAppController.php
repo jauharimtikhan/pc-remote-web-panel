@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Symfony\Component\Uid\Ulid;
 
 class AndroidAppController extends Controller
 {
@@ -20,7 +21,6 @@ class AndroidAppController extends Controller
         $appVersion = AndroidAppVersion::orderByDesc('version_code')->first();
         // Versi terbaru yang ada di server Laravel lo
         $latestVersion = $appVersion->version ?? "1.0.0";
-        dd($appVersion);
         if (version_compare($latestVersion, $currentVersion, '>')) {
             Log::debug("[ANDROID APP OTA UPDATE]:" . json_encode([
                 'current_version' => $currentVersion,
@@ -61,25 +61,27 @@ class AndroidAppController extends Controller
             $version = $request->input('version', 'v1.0.0');
             $file = $request->file('file');
 
-            $filename = "android/bundles/{$version}.zip";
+            $filename = "android/bundle/{$version}.zip";
             $file->storeAs('android/bundle', $version . '.zip', 'public');
 
             $clearVersion = Str::replace('v', '', $version);
             $versionCode = Str::replace('.', '', $clearVersion);
             DB::beginTransaction();
             try {
-                AndroidAppVersion::updateOrCreate([
-                    'version' => $clearVersion
-                ], [
-                    'bundle_url' => asset("storage/{$filename}"),
-                    'version_code' => $versionCode
+                $id = Ulid::generate();
+                AndroidAppVersion::insert([
+                    'id' => $id,
+                    'version' => $clearVersion,
+                    'bundle_url' => route('api.android.download-asset', $id),
+                    'version_code' => $versionCode,
+                    'path' => storage_path("app/public/{$filename}")
                 ]);
                 DB::commit();
                 Log::debug("[ANDROID APP BUNDLE UPLOAD]: success upload");
                 return response()->json([
                     'success' => true,
                     'message' => 'Bundle uploaded successfully',
-                    'url' => asset("storage/{$filename}")
+                    'url' => route('api.android.download-asset', $id)
                 ]);
             } catch (\Throwable $th) {
                 DB::rollBack();
@@ -123,5 +125,18 @@ class AndroidAppController extends Controller
             'success' => true,
             'message' => "Berhasil menghapus release!"
         ], 200);
+    }
+
+    public function downloadBundleAsset(string $id)
+    {
+        $release = AndroidAppVersion::find($id);
+        if (!$release) {
+            abort(404);
+        }
+
+        if (!file_exists($release->path)) {
+            abort(404);
+        }
+        return response()->download($release->path);
     }
 }
