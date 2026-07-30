@@ -79,7 +79,7 @@
                                     <div class="action">
                                         <!-- Tombol Copy Token -->
                                         <button
-                                            onclick="navigator.clipboard.writeText('{{ $device->hash_token }}'); TOAST('success','Token disalin!')"
+                                            onclick="navigator.clipboard.writeText('{{ $device->web_token }}'); TOAST('success','Token disalin!')"
                                             class="text-success me-3 bg-transparent border-0" title="Copy Token">
                                             <i class="lni lni-clipboard"></i>
                                         </button>
