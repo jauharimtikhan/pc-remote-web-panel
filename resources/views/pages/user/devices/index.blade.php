@@ -137,6 +137,13 @@
                                     @method('PUT')
 
                                     <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="input-style-1">
+                                                <label>Nama Perangkat</label>
+                                                <input type="text" name="nama_perangkat" placeholder="My App"
+                                                    value="{{ old('nama_perangkat', $device->device_name) }}" />
+                                            </div>
+                                        </div>
                                         <div class="col-md-6">
                                             <div class="input-style-1">
                                                 <label>Port Lokal</label>
@@ -164,8 +171,18 @@
 
                                     <div class="input-style-1">
                                         <label>Security PIN</label>
-                                        <input type="password" name="security_pin" placeholder="PIN Keamanan 4-6 Digit"
-                                            value="{{ old('security_pin', $device->config->security_pin ?? ($device->security_pin ?? '')) }}" />
+                                        <div class="input-group">
+                                            <input type="password" name="security_pin"
+                                                class="form-control bg-light text-muted"
+                                                value="{{ $device->security_pin }}" readonly id="security_pin">
+                                            <button type="button" class="btn btn-outline-primary"
+                                                onclick="copyToken('security_pin')">
+                                                <i class="lni lni-clipboard"></i> Salin
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger" onclick="showPin()">
+                                                <i class="lni lni-eye"></i> Tampilkan Pin
+                                            </button>
+                                        </div>
                                         <small class="text-gray">Biarkan kosong jika tidak ingin menggunakan PIN.</small>
                                     </div>
 
@@ -285,6 +302,17 @@
                 btn.classList.remove('btn-success', 'text-white', 'border-success');
                 btn.classList.add('btn-outline-primary');
             }, 2000);
+        }
+
+        function showPin() {
+            let isChecked = false;
+            let passEle = document.getElementById('security_pin');
+            if (passEle.getAttribute('type') === 'password') {
+                passEle.setAttribute('type', 'text');
+            } else {
+                passEle.setAttribute('type', 'password');
+            }
+
         }
     </script>
 @endpush

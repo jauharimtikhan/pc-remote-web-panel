@@ -37,11 +37,16 @@ class UserDeviceController extends Controller
 
         $validated = $request->validate([
             'port' => 'required|numeric',
-            'mode' => "required|in:Lokal (LAN),Online (Cloudflare Tunnel)"
+            'mode' => "required|in:Lokal (LAN),Online (Cloudflare Tunnel)",
+            'nama_perangkat' => "required|string"
         ]);
         DB::beginTransaction();
         try {
-            $device->update($validated);
+            $device->update([
+                'port' => $validated['port'],
+                'mode' => $validated['mode'],
+                'device_name' => $validated['nama_perangkat'],
+            ]);
             DB::commit();
             return back()->with('success', 'Pengaturan device berhasil disimpan!');
         } catch (\Throwable $th) {
