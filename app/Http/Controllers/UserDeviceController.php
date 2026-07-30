@@ -9,7 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class UserDeviceController extends Controller
 {
@@ -110,7 +110,7 @@ class UserDeviceController extends Controller
     {
         $token = $request->input('token');
         $deviceId = $request->input('device_id');
-
+        Log::debug("[VALIDATE TOKEN ENDPOINT]: " . $token);
 
         // Cari token web yang di-generate user di Web Panel
         $device = Device::where('web_token', $token)->first();

@@ -42,7 +42,7 @@ class DeviceController extends Controller
             // 1. Generate Subdomain Unik 4 Huruf
             $subdomain = $this->cfService->getUniqueSubdomain();
             $tunnelName = "tunnel-{$subdomain}";
-            $domain = env('CLOUDFLARE_DOMAIN');
+            $domain = config('services.cloudflare.domain');
             $fullUrl = "https://{$subdomain}.{$domain}";
 
             // 2. Create Tunnel di CF
