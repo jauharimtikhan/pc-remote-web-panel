@@ -15,7 +15,7 @@ class AndroidAppController extends Controller
     {
         Log::debug("[ANDROID APP OTA UPDATE PAYLOAD]:" . json_encode($request->all(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
         // Versi saat ini yang sedang dipakai di HP user dikirim oleh plugin
-        $currentVersion = $request->input('version', '1.0.0');
+        $currentVersion = $request->input('version_build', '1.0.0');
         $appVersion = AndroidAppVersion::latest()->first();
         // Versi terbaru yang ada di server Laravel lo
         $latestVersion = $appVersion->version ?? "1.0.0";
