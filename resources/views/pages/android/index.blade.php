@@ -1,17 +1,12 @@
-@extends('layout.auth', ['title' => 'Manajemen Device'])
+@extends('layout.auth', ['title' => 'Manajemen Android Release'])
 
 @section('content')
     <div class="title-wrapper pt-30">
         <div class="row align-items-center">
             <div class="col-md-6">
                 <div class="title">
-                    <h2>Daftar Device & Tunnel</h2>
+                    <h2>Daftar Android Release</h2>
                 </div>
-            </div>
-            <div class="col-md-6 text-md-end">
-                <a href="{{ route('admin.devices.create') }}" class="main-btn primary-btn btn-hover btn-sm">
-                    <i class="lni lni-plus mr-5"></i> Tambah Device
-                </a>
             </div>
         </div>
     </div>
@@ -34,16 +29,13 @@
                     <thead>
                         <tr>
                             <th>
-                                <h6>Device / User</h6>
+                                <h6>Versi</h6>
                             </th>
                             <th>
-                                <h6>Tunnel URL</h6>
+                                <h6>Bundle Url</h6>
                             </th>
                             <th>
-                                <h6>Status</h6>
-                            </th>
-                            <th>
-                                <h6>Last Seen</h6>
+                                <h6>Rilis</h6>
                             </th>
                             <th>
                                 <h6>Aksi</h6>
@@ -51,44 +43,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($devices as $device)
-                            <tr id="row-{{ $device->id }}">
+                        @foreach ($releases as $release)
+                            <tr id="row-{{ $release->id }}">
                                 <td>
-                                    <p class="text-bold">{{ $device->device_name }}</p>
-                                    <small class="text-gray">{{ $device->user->name ?? 'Unknown User' }}</small>
+                                    <p class="text-bold">{{ $release->version }}</p>
                                 </td>
                                 <td>
-                                    <a href="{{ $device->tunnel_url }}" target="_blank"
-                                        class="text-primary text-decoration-underline">
-                                        {{ str_replace('https://', '', $device->tunnel_url) }}
-                                    </a>
+                                    <p class="d-inline-block text-truncate" style="max-width: 150px;">
+                                        {{ $release->bundle_url }}</p>
                                 </td>
                                 <td>
-                                    @if ($device->is_online)
-                                        <span class="status-btn success-btn btn-sm">Online</span>
-                                    @else
-                                        <span class="status-btn close-btn btn-sm">Offline</span>
-                                    @endif
+                                    {{ $release->created_at->diffForHumans() }}
                                 </td>
-                                <td>
-                                    <p class="text-sm">
-                                        {{ $device->last_seen_at ? $device->last_seen_at->diffForHumans() : 'Belum pernah' }}
-                                    </p>
-                                </td>
+
                                 <td>
                                     <div class="action">
-                                        <!-- Tombol Copy Token -->
-                                        <button
-                                            onclick="navigator.clipboard.writeText('{{ $device->web_token }}'); TOAST('success','Token disalin!')"
-                                            class="text-success me-3 bg-transparent border-0" title="Copy Token">
-                                            <i class="lni lni-clipboard"></i>
-                                        </button>
-                                        <a href="{{ route('admin.devices.edit', ['device' => $device->id]) }}"
-                                            class="text-primary me-3">
-                                            <i class="lni lni-pencil"></i>
-                                        </a>
                                         <button class="text-danger border-0 bg-transparent btn-delete"
-                                            data-id="{{ $device->id }}">
+                                            data-id="{{ $release->id }}">
                                             <i class="lni lni-trash-can"></i>
                                         </button>
                                     </div>
@@ -124,7 +95,7 @@
                             didOpen: () => Swal.showLoading()
                         });
 
-                        fetch(`/admin/devices/${id}`, {
+                        fetch(`/admin/android-release/${id}`, {
                             method: 'DELETE',
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}',

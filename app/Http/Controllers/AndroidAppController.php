@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AndroidAppVersion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class AndroidAppController extends Controller
 {
@@ -71,5 +72,33 @@ class AndroidAppController extends Controller
         }
 
         return response()->json(['error' => 'No file uploaded'], 400);
+    }
+
+    public function view_list()
+    {
+        $releases = AndroidAppVersion::paginate(10);
+        return view('pages.android.index', compact('releases'));
+    }
+
+    public function view_delete(string $id)
+    {
+        $release = AndroidAppVersion::find($id);
+
+        if (!$release) {
+            return response()->json([
+                'message' => "Data tidak ditemukan!"
+            ], 404);
+        }
+
+        $filename = $release->version . ".zip";
+
+        if (Storage::disk('public')->exists("android/bundles/{$filename}")) {
+            Storage::disk('public')->delete("android/bundles/{$filename}");
+        }
+
+        $release->delete();
+        return response()->json([
+            'message' => "Berhasil menghapus release!"
+        ], 200);
     }
 }

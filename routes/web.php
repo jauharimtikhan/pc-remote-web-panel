@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AndroidAppController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\HomeController;
@@ -34,17 +35,28 @@ Route::middleware('auth')
         Route::get('/auth/logout', [AuthController::class, 'logout'])->name('auth.logout');
         Route::get('/', [HomeController::class, 'index'])->name('home.index');
 
-
-
         Route::resource('pengguna', UserController::class)
             ->parameter('pengguna', 'user')
             ->names('pengguna');
 
         Route::resource('devices', DeviceController::class);
+
+        Route::controller(AndroidAppController::class)
+            ->prefix('android-release')
+            ->name('android-release.')
+            ->group(function () {
+                Route::get('/', 'view_list')->name('index');
+                Route::delete('/{id}', 'view_delete')->name('destroy');
+            });
     });
+
+
+
 Route::get('/my-devices', [UserDeviceController::class, 'index'])
     ->middleware('auth')
     ->name('user.devices');
+
+
 Route::put('/my-devices/{device}/config', [UserDeviceController::class, 'updateConfig'])
     ->middleware('auth')
     ->name('user.devices.config.update');

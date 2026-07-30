@@ -26,7 +26,7 @@
                                 @foreach ($users as $user)
                                     <option value="{{ $user->id }}"
                                         {{ $device->user_id == $user->id ? 'selected' : '' }}>
-                                        {{ $user->name }} ({{ $user->email }})
+                                        {{ $user->name }} ({{ $user->username }})
                                     </option>
                                 @endforeach
                             </select>
