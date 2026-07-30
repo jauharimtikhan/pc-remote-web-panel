@@ -18,15 +18,23 @@ class AndroidAppController extends Controller
         $appVersion = AndroidAppVersion::latest()->first();
         // Versi terbaru yang ada di server Laravel lo
         $latestVersion = $appVersion->version ?? "1.0.0";
-
         if (version_compare($latestVersion, $currentVersion, '>')) {
+            Log::debug("[ANDROID APP OTA UPDATE]:" . json_encode([
+                'current_version' => $currentVersion,
+                'latest_version' => $latestVersion,
+                'message' => "success"
+            ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
             return response()->json([
                 'url' => $appVersion->bundle_url ?? route('api.android.fallback-version'), // File zip berisi folder www
                 'version' => $latestVersion,
                 'status' => 'success'
             ]);
         }
-
+        Log::debug("[ANDROID APP OTA UPDATE]:" . json_encode([
+            'current_version' => $currentVersion,
+            'latest_version' => $latestVersion,
+            'message' => "no_update"
+        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
         return response()->json([
             'status' => 'no_update'
         ]);
