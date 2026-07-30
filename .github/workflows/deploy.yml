@@ -1,0 +1,53 @@
+name: Deploy Laravel
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+
+      - name: Sync Files
+        run: |
+          rsync -az --delete \
+          --exclude=".git" \
+          --exclude=".github" \
+          --exclude="vendor" \
+          --exclude="node_modules" \
+          --exclude=".env" \
+          --exclude=".env" \
+          ./ \
+          ${{ secrets.USERNAME }}@${{ secrets.HOST }}:/var/www/pramaxx-pc-remote
+
+      - name: Run Laravel Commands
+        run: |
+          ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} << EOF
+            cd /var/www/pramaxx-pc-remote
+
+            composer install --no-dev --optimize-autoloader
+
+            php artisan migrate --force
+
+            php artisan optimize:clear
+
+            php artisan optimize
+
+            php artisan storage:link || true
+
+            sudo systemctl reload php8.3-fpm
+
+            sudo systemctl reload apache2
+          EOF
