@@ -39,6 +39,7 @@ jobs:
 
             chmod -R 777 bootstrap
             chmod -R 777 storage/framework
+            chmod -R 777 storage/logs
 
             composer install --no-dev --optimize-autoloader
 
