@@ -38,8 +38,7 @@ jobs:
             cd /var/www/pramaxx-pc-remote
 
             chmod -R 777 bootstrap
-            chmod -R 777 storage/framework
-            chmod -R 777 storage/logs
+            chmod -R 777 storage
 
             composer install --no-dev --optimize-autoloader
 
