@@ -51,7 +51,7 @@ class AndroidAppController extends Controller
             $file = $request->file('file');
 
             $filename = "android/bundles/{$version}.zip";
-            $file->storePublicly($filename);
+            $file->storeAs('android/bundle', $version . '.zip', 'public');
 
             DB::beginTransaction();
             try {
