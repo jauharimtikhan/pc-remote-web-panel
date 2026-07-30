@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AndroidAppVersion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class AndroidAppController extends Controller
@@ -60,15 +61,21 @@ class AndroidAppController extends Controller
                     'bundle_url' => asset("storage/{$filename}")
                 ]);
                 DB::commit();
+                Log::debug("[ANDROID APP BUNDLE UPLOAD]: success upload");
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Bundle uploaded successfully',
+                    'url' => asset("storage/{$filename}")
+                ]);
             } catch (\Throwable $th) {
                 DB::rollBack();
+                Log::debug("[ANDROID APP BUNDLE UPLOAD]: " . $th->getMessage());
+                return response()->json([
+                    'success' => false,
+                    'message' => $th->getMessage(),
+                    'url' => null
+                ], 500);
             }
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Bundle uploaded successfully',
-                'url' => asset("storage/{$filename}")
-            ]);
         }
 
         return response()->json(['error' => 'No file uploaded'], 400);
