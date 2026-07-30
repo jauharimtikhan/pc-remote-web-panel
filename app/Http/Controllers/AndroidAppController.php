@@ -20,6 +20,7 @@ class AndroidAppController extends Controller
         $appVersion = AndroidAppVersion::orderByDesc('version_code')->first();
         // Versi terbaru yang ada di server Laravel lo
         $latestVersion = $appVersion->version ?? "1.0.0";
+        dd($appVersion);
         if (version_compare($latestVersion, $currentVersion, '>')) {
             Log::debug("[ANDROID APP OTA UPDATE]:" . json_encode([
                 'current_version' => $currentVersion,
@@ -106,6 +107,7 @@ class AndroidAppController extends Controller
 
         if (!$release) {
             return response()->json([
+                'success' => false,
                 'message' => "Data tidak ditemukan!"
             ], 404);
         }
@@ -118,6 +120,7 @@ class AndroidAppController extends Controller
 
         $release->delete();
         return response()->json([
+            'success' => true,
             'message' => "Berhasil menghapus release!"
         ], 200);
     }
