@@ -7,16 +7,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class AndroidAppController extends Controller
 {
 
     public function check_update(Request $request)
     {
-        Log::debug("[ANDROID APP OTA UPDATE PAYLOAD]:" . json_encode($request->all(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        // Log::debug("[ANDROID APP OTA UPDATE PAYLOAD]:" . json_encode($request->all(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
         // Versi saat ini yang sedang dipakai di HP user dikirim oleh plugin
         $currentVersion = $request->input('version_build', '1.0.0');
-        $appVersion = AndroidAppVersion::latest()->first();
+        $appVersion = AndroidAppVersion::orderByDesc('version_code')->first();
         // Versi terbaru yang ada di server Laravel lo
         $latestVersion = $appVersion->version ?? "1.0.0";
         if (version_compare($latestVersion, $currentVersion, '>')) {
@@ -62,12 +63,15 @@ class AndroidAppController extends Controller
             $filename = "android/bundles/{$version}.zip";
             $file->storeAs('android/bundle', $version . '.zip', 'public');
 
+            $clearVersion = Str::replace('v', '', $version);
+            $versionCode = Str::replace('.', '', $clearVersion);
             DB::beginTransaction();
             try {
                 AndroidAppVersion::updateOrCreate([
                     'version' => $version
                 ], [
-                    'bundle_url' => asset("storage/{$filename}")
+                    'bundle_url' => asset("storage/{$filename}"),
+                    'version_code' => $versionCode
                 ]);
                 DB::commit();
                 Log::debug("[ANDROID APP BUNDLE UPLOAD]: success upload");

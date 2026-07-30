@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('android_app_versions', function (Blueprint $table) {
             $table->id();
             $table->string('version')->nullable();
+            $table->bigInteger('version_code')->nullable();
             $table->string('bundle_url')->nullable();
             $table->timestamps();
         });

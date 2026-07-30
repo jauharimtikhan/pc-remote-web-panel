@@ -8,6 +8,7 @@ class AndroidAppVersion extends Model
 {
     protected $fillable = [
         'version',
+        'version_code',
         'bundle_url'
     ];
 
