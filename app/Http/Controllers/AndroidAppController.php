@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AndroidAppVersion;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -74,7 +75,9 @@ class AndroidAppController extends Controller
                     'version' => $clearVersion,
                     'bundle_url' => route('api.android.download-asset', $id),
                     'version_code' => $versionCode,
-                    'path' => storage_path("app/public/{$filename}")
+                    'path' => storage_path("app/public/{$filename}"),
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ]);
                 DB::commit();
                 Log::debug("[ANDROID APP BUNDLE UPLOAD]: success upload");
