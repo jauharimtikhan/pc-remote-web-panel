@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Services\CloudflareService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -27,6 +28,7 @@ class AuthController extends Controller
             'password' => 'required|min:3',
         ]);
 
+        DB::beginTransaction();
         try {
             $user = User::create([
                 'name' => $validated['nama_lengkap'],
@@ -62,11 +64,13 @@ class AuthController extends Controller
                 'tunnel_url' => $fullUrl,
                 'port' => 8765,
             ]);
+            DB::commit();
 
 
             Auth::login($user);
             return $this->toWithAlert('user.devices', null, 'success', 'Pendaftaran akun berhasil');
         } catch (\Throwable $th) {
+            DB::rollBack();
             return $this->backWithAlert('error', "Terjadi kesalahan sistem!, Silahkan ulangi proses pendaftaran.");
         }
     }

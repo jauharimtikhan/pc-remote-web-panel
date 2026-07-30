@@ -45,6 +45,6 @@ Route::middleware('auth')
 Route::get('/my-devices', [UserDeviceController::class, 'index'])
     ->middleware('auth')
     ->name('user.devices');
-Route::put('/my-devices/{id}/config', [UserDeviceController::class, 'updateConfig'])
+Route::put('/my-devices/{device}/config', [UserDeviceController::class, 'updateConfig'])
     ->middleware('auth')
     ->name('user.devices.config.update');

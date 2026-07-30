@@ -8,6 +8,7 @@ use App\Services\CloudflareService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class UserDeviceController extends Controller
@@ -31,35 +32,22 @@ class UserDeviceController extends Controller
     }
 
     // Fungsi Simpan Pengaturan
-    public function updateConfig(Request $request, $deviceId)
+    public function updateConfig(Request $request, Device $device)
     {
-        /**
-         * @var User $user
-         */
-        $user = Auth::user();
-        $device = $user->config()->where('device_id', $deviceId)->firstOrFail();
 
-        $request->validate([
-            'port' => 'nullable|integer',
-            'mode' => 'nullable|string|max:255',
-            'security_pin' => 'nullable|string|max:255',
+        $validated = $request->validate([
+            'port' => 'required|numeric',
+            'mode' => "required|in:Lokal (LAN),Online (Cloudflare Tunnel)"
         ]);
-        $subdomain = Str::replace('.' . env('CLOUDFLARE_DOMAIN'), '', $device->tunnel_url);
-        $this->cfService->configureTunnelRoute($device->tunnel_id, $subdomain, $request->port ?? 8765);
-
-
-        // Update atau Create data config
-        $device->updateOrCreate(
-            ['user_id' => Auth::id()], // Kondisi pencarian
-            [
-                'device_id' => $request->device_id,
-                'port' => $request->port,
-                'mode' => $request->mode,
-                'security_pin' => $request->security_pin,
-            ] // Data yang diupdate/dibuat
-        );
-
-        return back()->with('success', 'Pengaturan device berhasil disimpan!');
+        DB::beginTransaction();
+        try {
+            $device->update($validated);
+            DB::commit();
+            return back()->with('success', 'Pengaturan device berhasil disimpan!');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return back()->with('error', 'Pengaturan device gagal tersimpan!');
+        }
     }
 
     public function api_heartbeat(Request $request)
@@ -123,13 +111,22 @@ class UserDeviceController extends Controller
         $token = $request->input('token');
         $deviceId = $request->input('device_id');
 
+
         // Cari token web yang di-generate user di Web Panel
         $device = Device::where('web_token', $token)->first();
 
         if (!$device) {
             return response()->json([
                 'success' => false,
-                'message' => 'Token web panel tidak valid atau tidak ditemukan!'
+                'message' => 'Token web panel tidak ditemukan!'
+            ]);
+        }
+        $rawhash = hash('sha1', $device->cf_token);
+
+        if (!hash_equals($rawhash, $token)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Token web panel tidak valid!'
             ]);
         }
 

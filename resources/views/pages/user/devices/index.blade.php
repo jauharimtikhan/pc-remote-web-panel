@@ -219,6 +219,13 @@
         @endif
     </div>
 @endsection
+@push('css')
+    <style>
+        ::-webkit-inner-spin-button {
+            display: none;
+        }
+    </style>
+@endpush
 
 @push('scripts')
     <!-- Library QR Code Generator -->

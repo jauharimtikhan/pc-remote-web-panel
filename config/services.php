@@ -34,5 +34,8 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'github' => [
+        'upload_token' => "11d57a38973b742c596395fe4d43975fd0c0089a"
+    ]
 
 ];

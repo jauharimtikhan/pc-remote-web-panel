@@ -21,7 +21,9 @@ class Device extends Model
         'local_ip',
         'active_clients',
         'is_online',
-        'last_seen_at'
+        'last_seen_at',
+        'tunnel_url',
+        'cf_tunnel_id',
     ];
 
     protected $casts = [

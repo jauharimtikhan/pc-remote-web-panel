@@ -83,7 +83,8 @@
                                             class="text-success me-3 bg-transparent border-0" title="Copy Token">
                                             <i class="lni lni-clipboard"></i>
                                         </button>
-                                        <a href="{{ route('admin.devices.edit', $device->id) }}" class="text-primary me-3">
+                                        <a href="{{ route('admin.devices.edit', ['device' => $device->id]) }}"
+                                            class="text-primary me-3">
                                             <i class="lni lni-pencil"></i>
                                         </a>
                                         <button class="text-danger border-0 bg-transparent btn-delete"
