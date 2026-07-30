@@ -68,7 +68,7 @@ class AndroidAppController extends Controller
             DB::beginTransaction();
             try {
                 AndroidAppVersion::updateOrCreate([
-                    'version' => $version
+                    'version' => $clearVersion
                 ], [
                     'bundle_url' => asset("storage/{$filename}"),
                     'version_code' => $versionCode
