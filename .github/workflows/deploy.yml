@@ -37,6 +37,9 @@ jobs:
           ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} << EOF
             cd /var/www/pramaxx-pc-remote
 
+            chmod -R 777 bootstrap
+            chmod -R 777 storage/framework
+
             composer install --no-dev --optimize-autoloader
 
             php artisan migrate --force

@@ -16,12 +16,12 @@ class CloudflareService
 
     public function __construct()
     {
-        $this->accountId = env('CLOUDFLARE_ACCOUNT_ID');
-        $this->zoneId = env('CLOUDFLARE_ZONE_ID');
-        $this->domain = env('CLOUDFLARE_DOMAIN');
+        $this->accountId = config('services.cloudflare.account_id');
+        $this->zoneId = config('services.cloudflare.zone_id');
+        $this->domain = config('services.cloudflare.domain');
 
         $this->headers = [
-            'Authorization' => 'Bearer ' . env('CLOUDFLARE_API_TOKEN'),
+            'Authorization' => 'Bearer ' . config('services.cloudflare.api_token'),
             'Content-Type' => 'application/json',
         ];
     }

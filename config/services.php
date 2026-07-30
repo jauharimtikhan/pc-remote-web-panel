@@ -36,6 +36,12 @@ return [
     ],
     'github' => [
         'upload_token' => "11d57a38973b742c596395fe4d43975fd0c0089a"
+    ],
+    'cloudflare' => [
+        'account_id' => env("CLOUDFLARE_ACCOUNT_ID"),
+        'api_token' => env('CLOUDFLARE_API_TOKEN'),
+        'zone_id' => env('CLOUDFLARE_ZONE_ID'),
+        'domain' => env("CLOUDFLARE_DOMAIN"),
     ]
 
 ];
