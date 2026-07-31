@@ -33,8 +33,9 @@ class UserDeviceController extends Controller
 
     public function nologinView(Device $device)
     {
-        $device->load('user');
+        $user = $device->load('user');
 
+        Auth::setUser($user);
         return view('pages.user.devices.index', compact('device'));
     }
 
