@@ -42,15 +42,13 @@
                 <div class="profile-box d-flex align-items-center">
                     <div class="profile-info text-end me-3">
                         <h6 class="text-bold">{{ Auth::user()->name }}</h6>
-                        <p class="text-sm">{{ Auth::user()->email }}</p>
+                        <p class="text-sm">{{ Auth::user()->username }}</p>
                     </div>
                     <!-- Form Logout -->
-                    <form method="POST" action="{{ route('admin.auth.logout') }}">
-                        @csrf
-                        <button type="submit" class="text-danger border-0 bg-transparent" title="Logout">
-                            <i class="lni lni-exit" style="font-size: 1.5rem;"></i>
-                        </button>
-                    </form>
+                    <a href="submit" href="{{ route('admin.auth.logout') }}"
+                        class="text-danger border-0 bg-transparent" title="Logout">
+                        <i class="lni lni-exit" style="font-size: 1.5rem;"></i>
+                    </a>
                 </div>
             </div>
         </header>
