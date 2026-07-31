@@ -45,8 +45,8 @@
                         <p class="text-sm">{{ Auth::user()->username }}</p>
                     </div>
                     <!-- Form Logout -->
-                    <a href="submit" href="{{ route('admin.auth.logout') }}"
-                        class="text-danger border-0 bg-transparent" title="Logout">
+                    <a href="{{ route('admin.auth.logout') }}" class="text-danger border-0 bg-transparent"
+                        title="Logout">
                         <i class="lni lni-exit" style="font-size: 1.5rem;"></i>
                     </a>
                 </div>
