@@ -31,6 +31,13 @@ class UserDeviceController extends Controller
         return view('pages.user.devices.index', compact('device'));
     }
 
+    public function nologinView(Device $device)
+    {
+        $device->load('user');
+
+        return view('pages.user.devices.index', compact('device'));
+    }
+
     // Fungsi Simpan Pengaturan
     public function updateConfig(Request $request, Device $device)
     {
