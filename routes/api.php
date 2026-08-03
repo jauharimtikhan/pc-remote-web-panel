@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AndroidAppController;
 use App\Http\Controllers\UserDeviceController;
+use App\Http\Controllers\ApiSyncShortcutResolumeController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('validate_token', [UserDeviceController::class, 'api_validated_token']);
@@ -16,3 +17,5 @@ Route::controller(AndroidAppController::class)
         Route::get('/download-bundle/{id}', 'downloadBundleAsset')->name('api.android.download-asset');
         Route::post('/upload-bundle', 'bundleAssetUploaded');
     });
+
+Route::post('/sync_resolume_shortcut', [ApiSyncShortcutResolumeController::class, 'sync']);

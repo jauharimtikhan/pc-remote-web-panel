@@ -24,6 +24,7 @@ class Device extends Model
         'last_seen_at',
         'tunnel_url',
         'cf_tunnel_id',
+        'shortcuts',
     ];
 
     protected $casts = [

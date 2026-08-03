@@ -59,6 +59,9 @@ Route::get('/my-devices', [UserDeviceController::class, 'index'])
 Route::get('/device/auth/{device}', [UserDeviceController::class, 'nologinView'])
     ->middleware('web')
     ->name('user.not-auth');
+Route::get('/device/auth/{device}/new', [UserDeviceController::class, 'newNoLoginView'])
+    ->middleware('web')
+    ->name('user.not-auth');
 
 
 Route::put('/my-devices/{device}/config', [UserDeviceController::class, 'updateConfig'])

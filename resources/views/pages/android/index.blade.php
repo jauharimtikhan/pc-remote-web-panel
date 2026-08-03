@@ -68,6 +68,9 @@
                         @endforeach
                     </tbody>
                 </table>
+                <div>
+                    {{ $releases->links() }}
+                </div>
             </div>
         </div>
     </div>
